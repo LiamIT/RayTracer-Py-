@@ -1,12 +1,10 @@
 from Vector3D import Vector3D
-
-
 class Camera:
-    def __init__(self, position=Vector3D(0, 0, 0),
-        direction=Vector3D(0, 0, 1),
-        right=Vector3D(0, 0, 0),
-        down=Vector3D(0, 0, 0)):
-        self.position = position
-        self.direction = direction
-        self.right = right
-        self.down = down
+    def __init__(self, origin=Vector3D(0, 0, 0),
+        lookAt=Vector3D(0, 0, 1),
+        lookUp=Vector3D(0, 0, 0),
+        halfWidth = 0.0):
+        self.origin = origin
+        self.lookAt = lookAt
+        self.lookUp = lookUp
+        self.halfWidth = halfWidth

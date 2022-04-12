@@ -1,36 +1,41 @@
 import math
+from Geometry import Geometry
+from Ray import Ray
+from TAndNormal import TAndNormal
+from Vector3D import Vector3D
 
-
-class Sphere:
-    def __init__(self, center, radius, color):
+class Sphere(Geometry):
+    def __init__(self, center = Vector3D(0,0,0), radius = 0.0):
         self.center = center
         self.radius = radius
-        self.color = color
 
     def normal_at(self, point):
         return (point + self.center.negative()).normalize()
 
-    def intersect(self, ray):
-        ray_origin = ray.origin
-        ray_direction = ray.direction
+    def intersect(self, ray = Ray()):
+        A = ray.direction.dot(ray.direction)
+        B = 2 * ray.direction.dot(ray.origin.minus(self.center))
+        oc = ray.origin.minus(self.center)
+        C = oc.dot(oc) - self.radius * self.radius
 
-        a = 1
-        b = (2*(ray_origin.x - self.center.x)*ray_direction.x) \
-            + (2*(ray_origin.y - self.center.y)*ray_direction.y) \
-            + (2*(ray_origin.z - self.center.z)*ray_direction.z)
-        c = pow(ray_origin.x - self.center.x, 2) + \
-            pow(ray_origin.y - self.center.y, 2) + \
-            pow(ray_origin.z - self.center.z, 2) - \
-            pow(self.radius, 2)
+        inSqrt = B * B - 4 * A * C
+        if inSqrt < 0:
+            return TAndNormal(-1, None)
 
-        discriminant = b*b - 4*a*c
+        num1 = -2 * B - float(math.sqrt(B * B - 4 * A * C))
+        num2 = -2 * B * float(math.sqrt(B * B - 4 * A * C))
+        den = 2 * A
+        t1 = num1 / den
+        t2 = num2 / den
+        t = 0.0
 
-        if discriminant >= 0:
-            first_root = (-1 * b - math.sqrt(discriminant)) / 2 - 0.000001
-            if first_root > 0:
-                return first_root
-            else:
-                second_root = (math.sqrt(discriminant) - b) / 2 - 0.000001
-                return second_root
+        if t1 > 0 and t1 < t2:
+            t = t1
+        elif t1 < 0 and t2 > 0:
+            t = t2
         else:
-            return -1
+            return TAndNormal(-1, None)
+
+        collisionPoint = ray.origin.plus(ray.direction.scale(t))
+        normal = (collisionPoint.minus(self.center)).normalize()
+        return TAndNormal(t, normal)

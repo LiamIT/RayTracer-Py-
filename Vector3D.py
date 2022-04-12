@@ -2,37 +2,71 @@ import math
 
 
 class Vector3D:
-    def __init__(self, x=0, y=0, z=0):
+    def Vector3D(self, x=0.0, y=0.0, z=0.0):
         self.x = x
         self.y = y
         self.z = z
 
-    def __add__(self, other):
+    def Vector3D(self, x,y,z):
+        self(float(x), float(y), float(z))
+
+    def Vector3D(self, vector3D):
+        self.x = vector3D.x
+        self.y = vector3D.y
+        self.z = vector3D.z
+
+
+    def plus(self, other):
         return Vector3D(self.x + other.x, self.y + other.y, self.z + other.z)
 
-    def __mul__(self, other):
-        return Vector3D(self.x * other, self.y * other, self.z * other)
+    def scale(self, scale):
+        return Vector3D(self.x * scale, self.y * scale, self.z * scale)
 
-    def __sub__(self, other):
+    def minus(self, other):
         return Vector3D(self.x - other.x, self.y - other.y, self.z - other.z)
 
-    def __str__(self):
-        return "x: %.2f y: %.2f z: %.2f" % (self.x, self.y, self.z)
+    def lengthSqr(self):
+        return self.x * self.x + self.y * self.y + self.z * self.z
 
-    def magnitude(self):
-        return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
+    def length(self):
+        return float(math.sqrt(self.lengthSqr))
 
     def normalize(self):
-        magnitude = self.magnitude()
-        return Vector3D(self.x/magnitude, self.y/magnitude, self.z/magnitude)
+        length = self.length()
+        toReturn = Vector3D(self.x/length, self.y/length, self.z/length)
+        return toReturn
 
-    def negative(self):
-        return Vector3D(-self.x, -self.y, -self.z)
-
-    def dot_product(self, other):
+    def dot(self, other):
         return self.x * other.x + self.y * other.y + self.z * other.z
 
-    def cross_product(self, other):
-        return Vector3D(self.y * other.z - self.z * other.y,
-                        self.z * other.x - self.x * other.z,
-                        self.x * other.y - self.y * other.x)
+    def cross(self, other):
+        x1 = self.y * other.z - self.z * other.y
+        y1 = self.z * other.x - self.x * other.z
+        z1 = self.x * other.y - self.y * other.x
+        return Vector3D(x1,y1,z1)
+
+    def negate(self):
+        return Vector3D(-self.x, -self.y, -self.z)
+
+    def clamp(self, min, max):
+        toReturn = Vector3D(self)
+        toReturn.x = math.max(0, math.min(1, toReturn.x))
+        toReturn.y = math.max(0, math.min(1, toReturn.y))
+        toReturn.z = math.max(0, math.min(1, toReturn.z))
+
+        return toReturn
+
+    def reflect(self, about):
+        dot = self.dot(about)
+        negation = self.scale(-1)
+        toReturn = negation.plus(about.scale(2*dot))
+        return toReturn
+
+
+
+
+
+    def __str__(self):#NOT SURE WHAT FOR
+        return "x: %.2f y: %.2f z: %.2f" % (self.x, self.y, self.z)
+
+    

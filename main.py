@@ -2,7 +2,7 @@ from PIL import Image
 from Vector3D import Vector3D
 from Camera import Camera
 from Color import Color
-from Light import Light
+from Dir_Light import Light
 from Sphere import Sphere
 from Plane import Plane
 from Ray import Ray

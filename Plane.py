@@ -1,20 +1,18 @@
-from Color import Color
+from Geometry import Geometry
 from Vector3D import Vector3D
+from TAndNormal import TAndNormal
+from Ray import Ray
 
+class Plane(Geometry):
+    def Plane(self, ABC = Vector3D(1,0,0), dist = 0.0):
+        self.ABC = ABC
+        self.dist = dist
 
-class Plane:
-    def __init__(self, normal=Vector3D(1, 0, 0), distance=0.0, color=Color(0.5, 0.5, 0.5, 0)):
-        self.normal = normal
-        self.distance = distance
-        self.color = color
+    def intersect(self, ray = Ray()):
+        num = -self.dist-self.ABC.dot(ray.origin)
+        den = self.ABC.dot(ray.direction)
+        T = num/den
+        return TAndNormal(T, self.ABC)
 
-    def normal_at(self, point):
-        return self.normal
-
-    def intersect(self, ray):
-        dot = ray.direction.dot_product(self.normal)
-        if dot == 0:
-            return -1
-        else:
-            dummy = self.normal.dot_product(ray.origin + (self.normal * self.distance).negative())
-            return -1 * dummy / dot
+    #def normal_at(self, point):
+    #    return self.ABC
